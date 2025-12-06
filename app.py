@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify
 from google import genai
 from google.genai import types
+from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
 
-GENAI_KEY = "AIzaSyDh6hKO0t1M-JFVEBIf5rvhUyft6X0TfPE"
+load_dotenv()
+
+# Load environment variables
+GENAI_KEY = os.getenv("GENAI_KEY")
 
 client = genai.Client(api_key=GENAI_KEY)
 
