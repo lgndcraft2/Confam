@@ -5,15 +5,10 @@ import os
 
 app = Flask(__name__)
 
-# --- CONFIGURATION ---
-# ⚠️ REPLACE WITH YOUR NEW KEY (Revoke the old one!)
 GENAI_KEY = "AIzaSyDh6hKO0t1M-JFVEBIf5rvhUyft6X0TfPE"
 
-# 2. SETUP CLIENT (The New Way)
 client = genai.Client(api_key=GENAI_KEY)
 
-# 3. DEFINE TOOL
-# We create the tool once to reuse it
 google_search_tool = types.Tool(
     google_search=types.GoogleSearch()
 )
@@ -27,9 +22,6 @@ class USSDResponse:
         self.continueSession = continue_session
 
 def get_gemini_verdict(user_query):
-    # Safety check
-    # if GENAI_KEY == "PASTE_YOUR_NEW_KEY_HERE" or "AIzaSy" in GENAI_KEY:
-    #     return "Error: API Key missing or unsafe."
 
     prompt = f"""
     Fact check this claim in the Nigerian context: "{user_query}"
@@ -38,9 +30,9 @@ def get_gemini_verdict(user_query):
     """
     
     try:
-        # ✅ THE FIX: Use 'client.models.generate_content'
+        #Use 'client.models.generate_content'
         response = client.models.generate_content(
-            model='gemini-2.5-flash', # Use the smart, fast model
+            model='gemini-2.5-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
                 tools=[google_search_tool], # Pass the tool here
@@ -51,7 +43,7 @@ def get_gemini_verdict(user_query):
         
     except Exception as e:
         error_msg = str(e)
-        print(f"⚠️ API ERROR: {error_msg}")
+        print(f"API ERROR: {error_msg}")
         
         if "429" in error_msg:
             return "System busy (Rate Limit). Please try again in 10s."
@@ -64,7 +56,7 @@ def index():
 
 @app.route('/ussd', methods=['POST'])
 def ussd_handler():
-    # 4. GET JSON DATA (Safe handling)
+    #GET JSON DATA (Safe handling)
     ussd_request = request.get_json(silent=True) or request.values
     
     ussd_response = USSDResponse(
