@@ -77,7 +77,7 @@ def ussd_handler():
         is_new_session = (user_data == "" or user_data == "*928*9#")
 
     if is_new_session:
-        ussd_response.message = "CONFAM\n1. Check a Fact\n2. Report Fake News"
+        ussd_response.message = "CONFAM\n\n1. Check a Fact\n2. Report Fake News"
         ussd_response.continueSession = True
         
     elif user_data == '1':
